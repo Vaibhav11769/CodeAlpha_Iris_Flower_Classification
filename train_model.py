@@ -1,24 +1,52 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Load dataset
+# Load Dataset
 df = pd.read_csv("dataset/Iris.csv")
 
+# Remove Id column
+df.drop("Id", axis=1, inplace=True)
+
 print("=" * 50)
-print("First 5 Rows")
+print("Dataset Statistics")
 print("=" * 50)
-print(df.head())
+print(df.describe())
+
+print("\nDataset Information")
+print(df.info())
+
+print("\nMissing Values")
+print(df.isnull().sum())
+
+print("\nSpecies Count")
+print(df["Species"].value_counts())
+
+print("\nUnique Species:")
+print(df["Species"].unique())
 
 print("\nDataset Shape:")
 print(df.shape)
 
-print("\nColumns:")
-print(df.columns)
+# Count Plot
+plt.figure(figsize=(6,4))
+sns.countplot(data=df, x="Species")
+plt.title("Species Distribution")
+plt.show()
 
-print("\nMissing Values:")
-print(df.isnull().sum())
+# Pair Plot
+sns.pairplot(df, hue="Species")
+plt.show()
 
-print("\nSpecies Distribution:")
-print(df["Species"].value_counts())
+# Correlation Heatmap
+plt.figure(figsize=(8,6))
 
-print("\nDataset Info:")
-print(df.info())
+sns.heatmap(
+    df.drop("Species", axis=1).corr(),
+    annot=True,
+    cmap="coolwarm"
+)
+
+plt.title("Feature Correlation Heatmap")
+
+plt.show()
