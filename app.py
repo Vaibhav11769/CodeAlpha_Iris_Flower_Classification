@@ -160,6 +160,27 @@ if st.button("🔮 Predict"):
     st.toast("Prediction Successful! ✅")
 
     if prediction[0] == "Iris-setosa":
+        st.image(
+            "images/setosa.jpg",
+            caption="Iris Setosa",
+            use_container_width=True
+        )
+
+    elif prediction[0] == "Iris-versicolor":
+        st.image(
+            "images/versicolor.jpg",
+            caption="Iris Versicolor",
+            use_container_width=True
+        )
+
+    else:
+        st.image(
+            "images/virginica.jpg",
+            caption="Iris Virginica",
+            use_container_width=True
+        )
+
+    if prediction[0] == "Iris-setosa":
         st.info("🌸 Setosa has small petals and is easily distinguishable.")
 
     elif prediction[0] == "Iris-versicolor":
