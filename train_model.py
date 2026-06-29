@@ -1,13 +1,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    classification_report,
+    ConfusionMatrixDisplay
+)
 
 # -----------------------------
 # Load Dataset
@@ -56,6 +61,9 @@ results = {}
 
 print("\nModel Accuracy\n")
 
+best_accuracy = 0
+best_model_object = None
+
 for name, model in models.items():
 
     model.fit(X_train, y_train)
@@ -66,9 +74,38 @@ for name, model in models.items():
 
     results[name] = accuracy
 
+    if accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_model_object = model
+
     print(f"{name:<22}: {accuracy:.4f}")
+
+    print(f"\n{name} - Classification Report")
+    print(classification_report(y_test, prediction))
+
+    cm = confusion_matrix(y_test, prediction)
+
+    disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=model.classes_
+    )
+
+    disp.plot(cmap="Blues")
+
+    plt.title(name)
+
+    plt.show()
+
+    print("-"*60)
 
 best_model = max(results, key=results.get)
 
+joblib.dump(
+    best_model_object,
+    "models/iris_model.pkl"
+)
+
+print("\nModel Saved Successfully!")
+
 print("\nBest Model :", best_model)
-print("Accuracy   :", round(results[best_model] * 100, 2), "%")
+print("Accuracy   :", round(best_accuracy * 100, 2), "%")
