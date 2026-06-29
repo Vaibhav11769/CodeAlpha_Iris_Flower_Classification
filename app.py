@@ -61,7 +61,6 @@ st.markdown(
 ---
 """
 )
-st.write("Predict the species of an Iris flower using Machine Learning.")
 
 st.divider()
 
@@ -93,25 +92,37 @@ col1, col2 = st.columns(2)
 with col1:
 
     sepal_length = st.number_input(
-        "Sepal Length",
-        value=5.1
+        "Sepal Length (cm)",
+        min_value=0.0,
+        max_value=10.0,
+        value=5.1,
+        step=0.1
     )
 
     petal_length = st.number_input(
-        "Petal Length",
-        value=1.4
+        "Petal Length (cm)",
+        min_value=0.0,
+        max_value=10.0,
+        value=1.4,
+        step=0.1
     )
 
 with col2:
 
     sepal_width = st.number_input(
-        "Sepal Width",
-        value=3.5
+        "Sepal Width (cm)",
+        min_value=0.0,
+        max_value=10.0,
+        value=3.5,
+        step=0.1
     )
 
     petal_width = st.number_input(
-        "Petal Width",
-        value=0.2
+        "Petal Width (cm)",
+        min_value=0.0,
+        max_value=10.0,
+        value=0.2,
+        step=0.1
     )
 # -----------------------------
 # Prediction
@@ -135,11 +146,31 @@ if st.button("🔮 Predict"):
     )
 
     prediction = model.predict(sample)
+    probability = model.predict_proba(sample)
 
-    st.success(f"🌼 Prediction : {prediction[0]}")
+    confidence = probability.max() * 100
 
-    st.balloons()
+    st.success(f"### 🌸 Prediction: {prediction[0]}")
+
+    st.metric(
+        label="Confidence",
+        value=f"{confidence:.2f}%"
+    )
+
+    st.toast("Prediction Successful! ✅")
+
+    if prediction[0] == "Iris-setosa":
+        st.info("🌸 Setosa has small petals and is easily distinguishable.")
+
+    elif prediction[0] == "Iris-versicolor":
+        st.info("🌼 Versicolor is the intermediate species.")
+
+    else:
+        st.info("🌺 Virginica has the largest petals among the three species.")
 
 st.divider()
+st.divider()
 
-st.caption("Made with ❤️ using Streamlit")
+st.caption(
+    "Developed by Vaibhav | Data Science & AI | Powered by Scikit-learn & Streamlit"
+)
