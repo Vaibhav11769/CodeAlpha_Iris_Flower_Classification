@@ -2,51 +2,73 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# -----------------------------
 # Load Dataset
+# -----------------------------
+
 df = pd.read_csv("dataset/Iris.csv")
 
-# Remove Id column
+# Remove unnecessary column
 df.drop("Id", axis=1, inplace=True)
 
-print("=" * 50)
-print("Dataset Statistics")
-print("=" * 50)
-print(df.describe())
+# -----------------------------
+# Features and Target
+# -----------------------------
 
-print("\nDataset Information")
-print(df.info())
+X = df.drop("Species", axis=1)
+y = df["Species"]
 
-print("\nMissing Values")
-print(df.isnull().sum())
+# -----------------------------
+# Train-Test Split
+# -----------------------------
 
-print("\nSpecies Count")
-print(df["Species"].value_counts())
-
-print("\nUnique Species:")
-print(df["Species"].unique())
-
-print("\nDataset Shape:")
-print(df.shape)
-
-# Count Plot
-plt.figure(figsize=(6,4))
-sns.countplot(data=df, x="Species")
-plt.title("Species Distribution")
-plt.show()
-
-# Pair Plot
-sns.pairplot(df, hue="Species")
-plt.show()
-
-# Correlation Heatmap
-plt.figure(figsize=(8,6))
-
-sns.heatmap(
-    df.drop("Species", axis=1).corr(),
-    annot=True,
-    cmap="coolwarm"
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
 )
 
-plt.title("Feature Correlation Heatmap")
+print("=" * 50)
+print("Training Samples :", len(X_train))
+print("Testing Samples  :", len(X_test))
+print("=" * 50)
 
-plt.show()
+# -----------------------------
+# Models
+# -----------------------------
+
+models = {
+    "Logistic Regression": LogisticRegression(max_iter=200),
+    "KNN": KNeighborsClassifier(),
+    "Decision Tree": DecisionTreeClassifier(random_state=42),
+    "Random Forest": RandomForestClassifier(random_state=42)
+}
+
+results = {}
+
+print("\nModel Accuracy\n")
+
+for name, model in models.items():
+
+    model.fit(X_train, y_train)
+
+    prediction = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, prediction)
+
+    results[name] = accuracy
+
+    print(f"{name:<22}: {accuracy:.4f}")
+
+best_model = max(results, key=results.get)
+
+print("\nBest Model :", best_model)
+print("Accuracy   :", round(results[best_model] * 100, 2), "%")
