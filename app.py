@@ -11,6 +11,39 @@ st.set_page_config(
     layout="centered"
 )
 
+st.markdown("""
+<style>
+
+.main{
+    background-color:#f7f9fc;
+}
+
+h1{
+    color:#1565C0;
+    text-align:center;
+}
+
+.stButton>button{
+    width:100%;
+    height:55px;
+    border-radius:12px;
+    background:#1565C0;
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.stButton>button:hover{
+    background:#0D47A1;
+}
+
+div[data-testid="stSidebar"]{
+    background:#E3F2FD;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # -----------------------------
 # Load Model
 # -----------------------------
@@ -19,7 +52,15 @@ model = joblib.load("models/iris_model.pkl")
 # -----------------------------
 # Title
 # -----------------------------
-st.title("🌸 Iris Flower Classification")
+st.markdown(
+"""
+# 🌸 Iris Flower Classification
+
+### Predict Iris Species using Machine Learning
+
+---
+"""
+)
 st.write("Predict the species of an Iris flower using Machine Learning.")
 
 st.divider()
@@ -27,49 +68,51 @@ st.divider()
 # -----------------------------
 # Sidebar
 # -----------------------------
-st.sidebar.title("About Project")
+st.sidebar.header("📌 Project Information")
 
-st.sidebar.info("""
-This project classifies Iris flowers into three species using Machine Learning.
+st.sidebar.write("Developer : Vaibhav")
 
-Models Compared:
-- Logistic Regression
-- KNN
-- Decision Tree
-- Random Forest
+st.sidebar.write("Branch : Data Science & AI")
 
-Best Accuracy:
-100%
-""")
+st.sidebar.write("Dataset : Iris Dataset")
 
+st.sidebar.write("Algorithms:")
+
+st.sidebar.write("✔ Logistic Regression")
+st.sidebar.write("✔ KNN")
+st.sidebar.write("✔ Decision Tree")
+st.sidebar.write("✔ Random Forest")
+
+st.sidebar.success("Best Accuracy : 100%")
 # -----------------------------
 # User Inputs
 # -----------------------------
 
-sepal_length = st.number_input(
-    "Sepal Length (cm)",
-    min_value=0.0,
-    value=5.1
-)
+col1, col2 = st.columns(2)
 
-sepal_width = st.number_input(
-    "Sepal Width (cm)",
-    min_value=0.0,
-    value=3.5
-)
+with col1:
 
-petal_length = st.number_input(
-    "Petal Length (cm)",
-    min_value=0.0,
-    value=1.4
-)
+    sepal_length = st.number_input(
+        "Sepal Length",
+        value=5.1
+    )
 
-petal_width = st.number_input(
-    "Petal Width (cm)",
-    min_value=0.0,
-    value=0.2
-)
+    petal_length = st.number_input(
+        "Petal Length",
+        value=1.4
+    )
 
+with col2:
+
+    sepal_width = st.number_input(
+        "Sepal Width",
+        value=3.5
+    )
+
+    petal_width = st.number_input(
+        "Petal Width",
+        value=0.2
+    )
 # -----------------------------
 # Prediction
 # -----------------------------
@@ -93,7 +136,9 @@ if st.button("🔮 Predict"):
 
     prediction = model.predict(sample)
 
-    st.success(f"🌼 Predicted Species: {prediction[0]}")
+    st.success(f"🌼 Prediction : {prediction[0]}")
+
+    st.balloons()
 
 st.divider()
 
